@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link href="style.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="app.js"></script>
+    <script src="putana.js"></script>
+  </head>
+
+  <body onload='initSnow()'>
+
+    <div id="main-canvas">
+      <h1> С новым годом, Левитан!</h1>
+      <p>
+        <input type="button" value="Вызвать путан" onclick="callPutanas()">
+      </p>
+    </div>
+
+    <canvas id='world', width=800px, height=600px>
+    </canvas>
+
+  </body>
+</html>

@@ -1,0 +1,17 @@
+h1 {
+  text-align: center;
+}
+
+/*#main-canvas {
+  height: 700px;
+  width: 1400px;
+  border: 1px solid #c3c3c3;
+}*/
+
+
+canvas {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: -1;
+}
