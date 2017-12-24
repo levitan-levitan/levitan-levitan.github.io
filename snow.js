@@ -21,6 +21,12 @@ var py = [];
 var pz = [];
 var zFactor = [];
 
+const ALIVE = 0;
+const MELTING = 1;
+
+var snowflakeStatus = [];
+var timeMelting = [];
+
 const depth = 10;
 
 var vx = [];
@@ -36,6 +42,7 @@ const snowVerticalAcc = 10;
 const snowGravity = 10;
 const snowHorizontalAcc = 10;
 const friction = 0.1;
+const meltingTime = 2.0;
 
 var worldHeight = 600;
 var worldWidth = 800;
@@ -51,7 +58,7 @@ var windVx = 0.0;
 const windChange = 10.0;
 const windDrag = 0.5;
 const maxWindAcc = 1.0;
-const windReduction = 0.25;
+const windReduction = 0.5;
 
 const horizon = 3.0 / 4.0
 
@@ -76,6 +83,11 @@ drawSnow = function() {
     if (pz[i] < 7) {
       ctx.save();
       ctx.translate(px[i] * zFactor[i] + worldWidth / 2, py[i] * zFactor[i] + horizon * worldHeight);
+      if (snowflakeStatus[i] == MELTING) {
+        ctx.globalAlpha = 0.75 * Math.max(meltingTime - timeMelting[i], 0.0) / meltingTime;
+      } else {
+        ctx.globalAlpha = 0.75
+      }
       ctx.drawImage(snow, 0, 0, 16 * zFactor[i], 16 * zFactor[i]);
       ctx.restore()
     } else {
@@ -86,17 +98,19 @@ drawSnow = function() {
       ctx.fill();
       ctx.restore()
     }
-    // ctx.strokeStyle = 'black'
-    // ctx.beginPath()
-    // ctx.moveTo(px[i] * zFactor[i] + worldWidth / 2, py[i] * zFactor[i] + horizon * worldHeight)
-    // ctx.lineTo(px[i] * zFactor[i] + worldWidth / 2, floor[i] + worldHeight * horizon)
-    // ctx.stroke()
   }
 
   ctx.beginPath();
-  ctx.moveTo(100, 100);
-  ctx.lineTo(100 + windVx, 100);
+  ctx.moveTo(200,  horizon * worldHeight + 100);
+  ctx.lineTo(200,  horizon * worldHeight - 100);
   ctx.stroke();
+
+  ctx.fillStyle='red';
+  ctx.beginPath();
+  ctx.moveTo(200,  horizon * worldHeight - 100);
+  ctx.lineTo(200 + 2.5 * windVx,  horizon * worldHeight - 75)
+  ctx.lineTo(200,  horizon * worldHeight - 50)
+  ctx.fill();
 
   lastUpdate = new Date().getTime();
   window.requestAnimationFrame(drawSnow);
@@ -105,11 +119,12 @@ drawSnow = function() {
 addSnowflake = function() {
   z = Math.random() * depth;
   zf = 1.0 / (1.0 + z);
-  f = worldHeight / 4 * zf + worldHeight / 4
+  f = (1 - horizon) * worldHeight * zf
 
   pz.push(z);
   zFactor.push(zf);
   floor.push(f)
+  snowflakeStatus.push(ALIVE)
 
   px.push(
    (Math.random() - 0.5) * (worldWidth / zf + 2 * spawnOffsetX)
@@ -126,6 +141,8 @@ spawnSnowflakeTop = function(i) {
   pz[i] = Math.random() * depth;
   zFactor[i] = 1 / (1 + pz[i]);
   floor[i] = (1 - horizon) * worldHeight * zFactor[i]
+  snowflakeStatus[i] = ALIVE;
+  timeMelting[i] = 0;
 
   px[i] = (Math.random() - 0.5) * (worldWidth / zFactor[i] + 2 * spawnOffsetX);
 
@@ -143,24 +160,33 @@ updateSnow = function(dt) {
 }
 
 updateSnowflake = function(i, dt) {
-  // check if snowflake is out of borders;
-   if (py[i] > floor[i] / zFactor[i]) {
-     spawnSnowflakeTop(i)
-   }
+  if (snowflakeStatus[i] == ALIVE) {
+    // check if snowflake is out of borders;
+     if (py[i] > floor[i] / zFactor[i]) {
+       snowflakeStatus[i] = MELTING;
+       timeMelting[i] = 0.0;
+     }
 
-  if (z < 5) {
-    vx[i] += normal() * dt * snowHorizontalAcc;
-    vy[i] += normal() * dt * snowVerticalAcc;
+    if (z < 5) {
+      vx[i] += normal() * dt * snowHorizontalAcc;
+      vy[i] += normal() * dt * snowVerticalAcc;
+    }
+
+    vx[i] += windDrag * (windVx - vx[i]) * dt;
+    vx[i] -= friction * vx[i] * dt;
+
+    vy[i] += snowGravity * dt;
+    vy[i] -= friction * vy[i] * dt;
+
+    px[i] += vx[i] * dt;
+    py[i] += vy[i] * dt;
+  } else {
+    if (timeMelting[i] > meltingTime) {
+      spawnSnowflakeTop(i);
+    } else {
+      timeMelting[i] += dt;
+    }
   }
-
-  vx[i] += windDrag * (windVx - vx[i]) * dt;
-  vx[i] -= friction * vx[i] * dt;
-
-  vy[i] += snowGravity * dt;
-  vy[i] -= friction * vy[i] * dt;
-
-  px[i] += vx[i] * dt;
-  py[i] += vy[i] * dt;
 }
 
 initSnow = function() {
@@ -169,14 +195,14 @@ initSnow = function() {
   window.onresize = function() {
     worldWidth = window.innerWidth;
     worldHeight = window.innerHeight;
-    canvas.width = worldWidth - 100;
-    canvas.height = worldHeight - 100;
+    canvas.width = worldWidth;
+    canvas.height = worldHeight;
   }
 
   worldWidth = window.innerWidth;
   worldHeight = window.innerHeight;
-  canvas.width = worldWidth - 50;
-  canvas.height = worldHeight - 50;
+  canvas.width = worldWidth;
+  canvas.height = worldHeight;
 
   for (i = 0; i < nSnowflakes; ++i) {
     addSnowflake();
@@ -184,6 +210,3 @@ initSnow = function() {
 
   window.requestAnimationFrame(drawSnow);
 }
-
-// var Canvas = document.getElementById("world");
-// $('body').css({'background-image':"url(" + Canvas.toDataURL("image/png")+ ")" });
