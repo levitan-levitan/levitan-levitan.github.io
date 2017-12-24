@@ -1,5 +1,20 @@
 h1 {
   text-align: center;
+  /*font-family: 'Pacifico', cursive;*/
+  font-family: 'Amatic SC', cursive;
+  font-size: 70;
+  color: white;
+}
+
+input {
+  font-family: 'Amatic SC', cursive;
+  font-size: 50;
+  border: 2px solid Plum;
+  border-radius: 4px;
+  color: purple;
+  background-color: pink;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }
 
 /*#main-canvas {
@@ -14,4 +29,19 @@ canvas {
     left: 0px;
     top: 0px;
     z-index: -1;
+}
+
+body {
+  overflow: hidden;
+}
+
+#world {
+  top : -0px;
+  left: -0px;
+  position : fixed;
+}
+
+.putana {
+  position: absolute;
+  height: 200px;
 }

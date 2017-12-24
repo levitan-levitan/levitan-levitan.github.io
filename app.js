@@ -19,6 +19,8 @@
 //   }
 // };
 
+var putanaHeight = 200;
+
 var putanaJump = function() {
 
   var putanas = document.getElementsByClassName("putana");
@@ -40,19 +42,49 @@ var putanaJump = function() {
   }
 };
 
-var putanaCounter = 0;
 
-function callPutanas() {
-  var parent = document.getElementById("main-canvas");
-  var img = document.createElement("img");
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-  const putanaId = "putana" + putanaCounter;
-  putanaCounter += 1;
-  img.setAttribute("id", putanaId);
 
-  img.setAttribute("class", "putana");
-  img.onclick = function() {
-      console.log(putanaId + 'should jump')
+async function callPutanas() {
+
+  var button = document.getElementById("putana-call-button");
+
+  // check whether putanas weren't called yet
+  if (button.style.cursor != "not-allowed") {
+
+    var parent = document.getElementById("main-canvas");
+
+    // load all putana images in loop
+    for (putanaCounter = 1; putanaCounter < 9; putanaCounter ++) {
+
+      const putanaId = "putana" + putanaCounter;
+      var img = document.createElement("img");
+
+      img.setAttribute("id", putanaId);
+      img.src = "putanas/putana" + putanaCounter + ".png";
+      img.setAttribute("class", "putana");
+
+
+      // putana will always jump when being clicked
+      img.onclick = function() {
+          console.log(putanaId + 'should jump')
+          $("#" + putanaId).animate({
+            top: "-=100px"
+          }, 200);
+
+          $("#" + putanaId).animate({
+            top: "+=100px"
+          }, 300);
+      };
+
+      img.style.top = horizon * worldHeight - putanaHeight/2.;
+      img.style.left = 50 + worldWidth/10. * putanaCounter;
+      parent.appendChild(img);
+
+      // putana appears and jumps
       $("#" + putanaId).animate({
         top: "-=100px"
       }, 200);
@@ -60,62 +92,13 @@ function callPutanas() {
       $("#" + putanaId).animate({
         top: "+=100px"
       }, 300);
-  };
-  img.src = "putanas/putanapink_up.png";
-  parent.appendChild(img);
+
+      // after 200ms the next putana is loaded
+      await sleep(200);
+    }
+  }
+
+
+  button.style.opacity = 0.6;
+  button.style.cursor = "not-allowed";
 }
-
-// function go() {
-//  var fileinput = document.getElementById("finput");
-//  var filename = fileinput.value;
-//  var answer = "Знаешь, где у тебя " + filename + "?"
-//
-//  var parent = document.getElementById("fieldset");
-//  console.log(parent);
-//
-//  var currentChild = document.getElementById("message");
-//  console.log(currentChild);
-//
-//  if (currentChild != null) {
-//   parent.removeChild(currentChild);
-//  }
-//
-//
-//  var paragraph = document.createElement("p");
-//  paragraph.setAttribute("id", "message");
-//  console.log(paragraph);
-//  var node = document.createTextNode(answer);
-//  paragraph.appendChild(node);
-//  console.log(paragraph);
-//
-//
-//  var child = document.getElementById("message");
-//  parent.appendChild(paragraph);
-//
-// }
-
-
-
-// var moveMenu = function() {
-//     $('.icon-menu').click( function() {
-//         $('.menu').animate({
-//             left: '0px'
-//             }, 200);
-//
-//         $('body').animate({
-//             left: '285px'
-//             }, 200);
-//         });
-//
-//     $('.icon-close').click( function() {
-//         $('.menu').animate({
-//             left: '-285px'
-//             }, 200);
-//
-//         $('body').animate({
-//             left: '0px'
-//             }, 200);
-//         })
-// };
-
-// $(document).ready(putanaJump);
