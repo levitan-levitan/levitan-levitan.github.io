@@ -192,6 +192,7 @@ updateSnowflake = function(i, dt) {
 initSnow = function() {
   snow.src = 'imgs/snow.png'
   const canvas = document.getElementById('world');
+
   window.onresize = function() {
     worldWidth = window.innerWidth;
     worldHeight = window.innerHeight;

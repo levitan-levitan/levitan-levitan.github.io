@@ -101,4 +101,12 @@ async function callPutanas() {
 
   button.style.opacity = 0.6;
   button.style.cursor = "not-allowed";
+
+  $('#letsgo').fadeOut(3000);
+
 }
+
+
+$(document).ready(function() {
+  $('#letsgo').hide().delay(300).fadeIn(3000);
+});
