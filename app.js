@@ -91,6 +91,7 @@ async function callPutanas() {
 
 $(document).ready(function() {
   $('#letsgo').hide().delay(300).fadeIn(3000);
+
   const frontCanvas = document.getElementById("front-canvas")
   const backCanvas = document.getElementById("back-canvas")
   frontCanvas.width = window.innerWidth
@@ -103,12 +104,22 @@ $(document).ready(function() {
   backSnow = new Snow(backCanvas, 1250, 0.5, 10)
   frontSnow = new Snow(frontCanvas, 250, 0, 0.5)
   tree = new Tree(backCanvas, 100)
+  discoball = new Discoball(backCanvas, segments=50);
+
+  const button = document.getElementById("party-button");
+  const music = document.getElementById("music")
+
+  button.onclick = function() {
+    discoball.turnOn()
+    tree.setCycle(500)
+  }
 
   background.init()
   frontback.init()
   backSnow.init()
   frontSnow.init()
   tree.init()
+  discoball.init()
 
   window.onresize = function() {
     frontCanvas.width = window.innerWidth
@@ -121,6 +132,9 @@ $(document).ready(function() {
     frontSnow.resize()
     background.resize()
     tree.resize()
+    discoball.resize()
+    music.loop = true;
+    music.play()
   }
 
 
@@ -131,6 +145,7 @@ $(document).ready(function() {
       tree.draw();
       frontback.draw()
       frontSnow.draw()
+      discoball.draw()
 
       drawLoop();
     })

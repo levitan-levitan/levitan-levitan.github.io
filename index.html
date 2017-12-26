@@ -9,6 +9,7 @@
     <script src="snow.js"></script>
     <script src="background.js"></script>
     <script src="tree.js"></script>
+    <script src="discoball.js"></script>
 
     <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Amatic+SC" rel="stylesheet">
@@ -16,13 +17,15 @@
   </head>
 
   <body>
-
+    <audio id='music'> <source src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Jingle_Bells_%2890bpm%29_%28Kevin_MacLeod%29_%28ISRC_USUAN1100187%29.oga"></audio>
     <div id="main-canvas">
       <h1> С новым годом, Левитан!</h1>
       <h2 id="letsgo">Время вызывать путан</h2>
       <p>
         <input type="button" value="Вызвать путан" id="putana-call-button"
         class="button" onclick="callPutanas()">
+        <input type="button" value="Пати хард!!!" id="party-button"
+        class="button">
       </p>
     </div>
 

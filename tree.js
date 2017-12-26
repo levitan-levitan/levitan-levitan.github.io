@@ -1,8 +1,8 @@
 Math.fmod = function (a,b) { return Number((a - (Math.floor(a / b) * b)).toPrecision(8)); };
 
-function Tree(canvas, numberOfLights) {
+function Tree(canvas, numberOfLights, cycleMs = 7500) {
   const horizon = 3.0 / 4.0;
-  const cycle = 10000;
+  var cycle = cycleMs;
   const ctx = canvas.getContext('2d');
   const imageWidth = 272;
   const imageHeight = 606;
@@ -15,6 +15,10 @@ function Tree(canvas, numberOfLights) {
   const px = []
   const py = []
   const state = []
+
+  this.setCycle = function(newCycle) {
+    cycle = newCycle;
+  }
 
   const initLights = function() {
     var c = document.createElement('canvas');
@@ -36,8 +40,8 @@ function Tree(canvas, numberOfLights) {
     var i = 0;
     var j = 0
     while(i < numLights && j < numLights * 10) {
-      const nx = j * 23.0 / numLights
-      const ny = j * 7.0 / numLights
+      const nx = j / 7.0 + normal() * 0.02;
+      const ny = j / numLights + normal() * 0.02
       const x = Math.round(nx * (treeImage.width - 1)) % treeImage.width;
       const y = Math.round(ny * (treeImage.height - 1)) % treeImage.height;
 
@@ -53,7 +57,7 @@ function Tree(canvas, numberOfLights) {
 
   this.init = function() {
     this.resize()
-    if (treeImage.complete || (img.naturalWidth > 0)) {
+    if (treeImage.complete || (treeImage.naturalWidth > 0)) {
       initLights();
     } else {
       treeImage.onload = function() {
@@ -82,7 +86,7 @@ function Tree(canvas, numberOfLights) {
 
     for (i = 0; i < numLights; ++i) {
       ctx.beginPath()
-      const indx = (state[i] + now) % cycle;
+      const indx = Math.round(i * 3 / numLights * cycle  + now) % cycle;
       const t = (indx % cycle) / cycle;
 
       ctx.fillStyle = 'hsl(' + Math.floor(t * 360) + ', 75%, 50%)'
