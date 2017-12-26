@@ -1,25 +1,7 @@
-// var putanaJump = function() {
-//
-//   var putanas = document.getElementsByClassName("putana");
-//
-//   for (i = 0; i < putanas.length; i++) {
-//
-//     const currentPutana = putanas[i].id;
-//     console.log(currentPutana);
-//
-//     $("#" + currentPutana).click(function() {
-//         $("#" + currentPutana).animate({
-//           top: "-=100px"
-//         }, 200);
-//
-//         $("#" + currentPutana).animate({
-//           top: "+=100px"
-//         }, 300);
-//     });
-//   }
-// };
-
 var putanaHeight = 200;
+const horizon = 3.0 /  4.0;
+var worldWidth = 800;
+var worldHeight = 600;
 
 var putanaJump = function() {
 
@@ -109,4 +91,51 @@ async function callPutanas() {
 
 $(document).ready(function() {
   $('#letsgo').hide().delay(300).fadeIn(3000);
+  const frontCanvas = document.getElementById("front-canvas")
+  const backCanvas = document.getElementById("back-canvas")
+  frontCanvas.width = window.innerWidth
+  frontCanvas.height = window.innerHeight
+  backCanvas.width = window.innerWidth
+  backCanvas.height = window.innerHeight
+
+  background = new Background(backCanvas)
+  frontback = new EmtpyBackground(frontCanvas)
+  backSnow = new Snow(backCanvas, 1250, 0.5, 10)
+  frontSnow = new Snow(frontCanvas, 250, 0, 0.5)
+  tree = new Tree(backCanvas, 100)
+
+  background.init()
+  frontback.init()
+  backSnow.init()
+  frontSnow.init()
+  tree.init()
+
+  window.onresize = function() {
+    frontCanvas.width = window.innerWidth
+    frontCanvas.height = window.innerHeight
+    backCanvas.width = window.innerWidth
+    backCanvas.height = window.innerHeight
+
+    backSnow.resize()
+    frontback.resize()
+    frontSnow.resize()
+    background.resize()
+    tree.resize()
+  }
+
+
+  function drawLoop() {
+    window.requestAnimationFrame(function() {
+      background.draw();
+      backSnow.draw()
+      tree.draw();
+      frontback.draw()
+      frontSnow.draw()
+
+      drawLoop();
+    })
+  }
+
+  drawLoop()
+
 });

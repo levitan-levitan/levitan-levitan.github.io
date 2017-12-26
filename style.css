@@ -35,12 +35,23 @@ h2 {
   border: 1px solid #c3c3c3;
 }*/
 
+#front-canvas {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: -1;
+}
 
-canvas {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    z-index: -1;
+#back-canvas {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: -2;
+}
+
+#tree {
+  position: absolute;
+  display : none;
 }
 
 body {
